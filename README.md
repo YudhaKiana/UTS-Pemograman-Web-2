@@ -49,23 +49,11 @@ INSERT INTO users VALUES (1,'admin','12345');
 
 # Eksperimen 1 — SQL Injection
 1️⃣ Versi Rentan (Vulnerable Login)
+
 File: login_vulnerable.php
 
-<?php
-$conn = mysqli_connect("localhost","root","","security_lab");
+<img width="1030" height="430" alt="Screenshot 2026-04-27 203739" src="https://github.com/user-attachments/assets/0e054008-5b54-4db9-aff1-ebb550f37e08" />
 
-$username = $_POST['username'];
-$password = $_POST['password'];
-
-$query = "SELECT * FROM users WHERE username='$username' AND password='$password'";
-$result = mysqli_query($conn, $query);
-
-if(mysqli_num_rows($result) > 0){
-    echo "Login berhasil!";
-}else{
-    echo "Login gagal!";
-}
-?>
 
 🧨 Payload Serangan
 
@@ -80,43 +68,29 @@ bebas
 
 Login berhasil tanpa password.
 Query berubah menjadi:
+
 SELECT * FROM users WHERE username='admin' -- ' AND password='bebas'
+
 ✅ SQL Injection berhasil.
 
 2️⃣ Versi Aman (Secure Login)
 
 File: login_secure.php
 
-<?php
-$conn = mysqli_connect("localhost","root","","security_lab");
+<img width="991" height="412" alt="Screenshot 2026-04-27 203954" src="https://github.com/user-attachments/assets/e73dcb5e-50fc-42c3-a30b-e0cc919ccb12" />
 
-$stmt = $conn->prepare("SELECT * FROM users WHERE username=? AND password=?");
-$stmt->bind_param("ss", $_POST['username'], $_POST['password']);
-$stmt->execute();
-$result = $stmt->get_result();
-
-if($result->num_rows > 0){
-    echo "Login berhasil!";
-}else{
-    echo "Login gagal!";
-}
-?>
 
 🔎 Hasil Setelah Mitigasi
 Payload SQL Injection tidak lagi berhasil. ✔️
 
 🧪 Eksperimen 2 — Cross Site Scripting (XSS)
+
 1️⃣ Versi Rentan
+
 File: comment_vulnerable.php
 
-<form method="POST">
-<textarea name="comment"></textarea>
-<button type="submit">Kirim</button>
-</form>
+<img width="650" height="240" alt="Screenshot 2026-04-27 204059" src="https://github.com/user-attachments/assets/62f38998-a4d9-4798-9ad6-f8e468a30337" />
 
-<?php
-echo $_POST['comment'];
-?>
 
 🧨 Payload XSS
 
@@ -135,16 +109,8 @@ Browser menjalankan script dari user.
 
 File: comment_secure.php
 
-<form method="POST">
-<textarea name="comment"></textarea>
-<button type="submit">Kirim</button>
-</form>
+<img width="833" height="296" alt="Screenshot 2026-04-27 204309" src="https://github.com/user-attachments/assets/f89476cc-bb31-4120-b024-b3cf651022ed" />
 
-<?php
-if(isset($_POST['comment'])){
-    echo htmlspecialchars($_POST['comment'], ENT_QUOTES, 'UTF-8');
-}
-?>
 
 🔎 Hasil Setelah Mitigasi
 Script tidak dijalankan, hanya tampil sebagai teks. ✔️
